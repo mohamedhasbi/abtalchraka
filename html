@@ -175,7 +175,7 @@
     <div id="login-page" class="login-container">
         <div class="login-form">
             <div class="text-center mb-6">
-                <img src="https://i.imgur.com/gLiLcpa.png" alt="شعار الجمعية" class="w-16 h-16 rounded-full object-cover mx-auto mb-4">
+                <img id="login-logo" src="https://i.imgur.com/gLiLcpa.png" alt="شعار الجمعية" class="w-16 h-16 rounded-full object-cover mx-auto mb-4">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-white">تسجيل الدخول</h2>
                 <p class="text-gray-600 dark:text-gray-300 mt-2">ادخل بياناتك للوصول إلى النظام</p>
             </div>
@@ -205,7 +205,7 @@
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                 <div class="flex items-center justify-between">
                     <div class="flex items-center gap-3">
-                        <img src="https://i.imgur.com/gLiLcpa.png" alt="شعار الجمعية" class="w-12 h-12 rounded-full object-cover sm:w-16 sm:h-16">
+                        <img id="header-logo" src="https://i.imgur.com/gLiLcpa.png" alt="شعار الجمعية" class="w-12 h-12 rounded-full object-cover sm:w-16 sm:h-16">
                         <div>
                             <h1 class="text-xl font-bold text-gray-900 dark:text-white sm:text-2xl" id="main-title">نظام إدارة صالة التايكوندو</h1>
                             <p class="text-sm text-gray-600 dark:text-gray-300 mt-1 sm:text-base" id="subtitle">جمعية أبطال شراكا للتايكوندو</p>
@@ -218,6 +218,13 @@
                         </select>
                         <button id="dark-mode-toggle" class="p-1 rounded-lg bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors sm:p-2">
                             <i class="fas fa-moon text-gray-700 dark:text-gray-300"></i>
+                        </button>
+                        <a id="register-link" href="register.html" target="_blank" class="hidden sm:inline-block bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg font-medium transition-colors">تسجيل جديد</a>
+                        <button id="paid-list-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-1 rounded-lg font-medium transition-colors sm:px-3 sm:py-2">
+                            <i class="fas fa-print"></i>
+                        </button>
+                        <button id="change-logo-btn" class="bg-gray-200 hover:bg-gray-300 text-gray-800 px-2 py-1 rounded-lg font-medium transition-colors dark:bg-gray-700 dark:text-white sm:px-3 sm:py-2">
+                            <i class="fas fa-image"></i>
                         </button>
                         <button id="add-player-btn" class="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded-lg font-medium flex items-center gap-1 transition-colors sm:px-4 sm:py-2 sm:gap-2">
                             <i class="fas fa-plus text-xs sm:text-base"></i>
@@ -466,10 +473,10 @@
                     <!-- Insurance alert players will be populated by JavaScript -->
                 </div>
                 
-                <div class="flex justify-end mt-4">
-                    <button type="button" onclick="hideInsuranceAlertModal()" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
-                        إغلاق
-                    </button>
+                <div class="flex flex-col sm:flex-row justify-end gap-2 mt-4">
+                    <button type="button" id="insurance-export-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">تنزيل CSV</button>
+                    <button type="button" id="insurance-print-btn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">طباعة</button>
+                    <button type="button" onclick="hideInsuranceAlertModal()" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">إغلاق</button>
                 </div>
             </div>
         </div>
@@ -485,10 +492,55 @@
                     <!-- Month alert players will be populated by JavaScript -->
                 </div>
                 
-                <div class="flex justify-end mt-4">
-                    <button type="button" onclick="hideMonthAlertModal()" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">
-                        إغلاق
-                    </button>
+                <div class="flex flex-col sm:flex-row justify-end gap-2 mt-4">
+                    <button type="button" id="month-export-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">تنزيل CSV</button>
+                    <button type="button" id="month-print-btn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">طباعة</button>
+                    <button type="button" onclick="hideMonthAlertModal()" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">إغلاق</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Paid Current Month Modal -->
+    <div id="paid-list-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 z-50 hidden">
+        <div class="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto dark:bg-gray-800 modal-content">
+            <div class="p-4 sm:p-6">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 sm:text-2xl" id="paid-list-title">اللاعبين المكتملين للشهر الحالي</h2>
+
+                <div class="grid grid-cols-1 gap-4" id="paid-list-container"></div>
+
+                <div class="flex flex-col sm:flex-row justify-end gap-2 mt-4">
+                    <button type="button" id="paid-export-btn" class="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">تنزيل CSV</button>
+                    <button type="button" id="paid-print-btn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">طباعة</button>
+                    <button type="button" onclick="hidePaidListModal()" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">إغلاق</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Logo Modal -->
+    <div id="logo-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 z-50 hidden">
+        <div class="bg-white rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto dark:bg-gray-800 modal-content">
+            <div class="p-4 sm:p-6">
+                <h2 class="text-xl font-bold text-gray-900 dark:text-white mb-4 sm:text-2xl" id="logo-modal-title">تغيير الشعار</h2>
+
+                <div class="space-y-4">
+                    <div class="upload-area dark:border-gray-600 dark:bg-gray-700" id="logo-upload-area">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p class="text-sm">انقر هنا لتحميل صورة أو اسحب وأفلت الصورة</p>
+                        <input type="file" id="logo-file-input" accept="image/*" class="hidden">
+                        <img id="logo-preview" class="preview-image" alt="Preview">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">أو أدخل رابط الصورة</label>
+                        <input type="url" id="logo-url-input" class="w-full px-3 py-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white" placeholder="https://...">
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-end gap-2 mt-6">
+                    <button type="button" id="logo-reset-btn" class="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded-lg font-medium transition-colors">إرجاع الافتراضي</button>
+                    <button type="button" id="logo-save-btn" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">حفظ</button>
+                    <button type="button" onclick="hideLogoModal()" class="bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg font-medium transition-colors">إلغاء</button>
                 </div>
             </div>
         </div>
@@ -709,11 +761,17 @@
                 teenagers: "الشباب",
                 adults: "الكبار",
                 insuranceAlert: "اللاعبين غير المضمونين",
-                monthAlert: "اللاعبين غير المكتملين للشهر الحالي"
+                monthAlert: "اللاعبين غير المكتملين للشهر الحالي",
+                reports: "التقارير",
+                paidCurrentMonth: "اللاعبين المكتملين للشهر الحالي",
+                downloadCSV: "تنزيل CSV",
+                print: "طباعة",
+                changeLogo: "تغيير الشعار",
+                registerLink: "تسجيل جديد"
             },
             fr: {
                 mainTitle: "Système de gestion du club de Taekwondo",
-                subtitle: "Association des Champions Charraka de Taekwondo",
+                subtitle: "Association des Champions Sharaka de Taekwondo",
                 addPlayer: "Ajouter un nouveau joueur",
                 noPlayers: "Aucun joueur trouvé",
                 noPlayersDesc: "Aucun joueur ne correspond à vos critères de recherche.",
@@ -776,7 +834,13 @@
                 teenagers: "Adolescents",
                 adults: "Adultes",
                 insuranceAlert: "Joueurs non assurés",
-                monthAlert: "Joueurs n'ayant pas complété le mois actuel"
+                monthAlert: "Joueurs n'ayant pas complété le mois actuel",
+                reports: "Rapports",
+                paidCurrentMonth: "Joueurs ayant complété le mois actuel",
+                downloadCSV: "Télécharger CSV",
+                print: "Imprimer",
+                changeLogo: "Changer le logo",
+                registerLink: "Lien d’inscription"
             }
         };
 
@@ -991,6 +1055,9 @@
         }
 
         function initializeMainDashboard() {
+            // Load persisted data first
+            loadPlayersFromStorage();
+            loadLogoFromStorage();
             populateMonthsCheckboxes();
             
             // Event listeners
@@ -1003,6 +1070,8 @@
             document.getElementById('dark-mode-toggle').addEventListener('click', toggleDarkMode);
             document.getElementById('language-select').addEventListener('change', changeLanguage);
             document.getElementById('add-player-btn').addEventListener('click', showAddModal);
+            document.getElementById('paid-list-btn').addEventListener('click', showPaidListModal);
+            document.getElementById('change-logo-btn').addEventListener('click', showLogoModal);
             
             // Photo upload functionality
             setupPhotoUpload();
@@ -1019,9 +1088,21 @@
                 updateLanguage(savedLanguage);
             }
             
-            // Add event listeners for alert buttons
+            // Add event listeners for alert buttons and export/print
             document.querySelector('.stats-grid div:nth-child(4)').addEventListener('click', showInsuranceAlert);
             document.querySelector('.stats-grid div:nth-child(3)').addEventListener('click', showMonthAlert);
+            const insExport = document.getElementById('insurance-export-btn');
+            const insPrint = document.getElementById('insurance-print-btn');
+            const monExport = document.getElementById('month-export-btn');
+            const monPrint = document.getElementById('month-print-btn');
+            const paidExport = document.getElementById('paid-export-btn');
+            const paidPrint = document.getElementById('paid-print-btn');
+            if (insExport) insExport.addEventListener('click', exportUninsuredCSV);
+            if (insPrint) insPrint.addEventListener('click', printUninsuredList);
+            if (monExport) monExport.addEventListener('click', exportUnpaidCSV);
+            if (monPrint) monPrint.addEventListener('click', printUnpaidList);
+            if (paidExport) paidExport.addEventListener('click', exportPaidCSV);
+            if (paidPrint) paidPrint.addEventListener('click', printPaidList);
         }
 
         function setupPhotoUpload() {
@@ -1262,6 +1343,7 @@
                 };
                 players.push(newPlayer);
             }
+            savePlayersToStorage();
             
             if (currentPage === 'main') {
                 renderPlayers();
@@ -1279,6 +1361,7 @@
             const confirmMsg = currentLanguage === 'ar' ? 'هل أنت متأكد من حذف هذا اللاعب؟' : 'Êtes-vous sûr de vouloir supprimer ce joueur ?';
             if (confirm(confirmMsg)) {
                 players = players.filter(player => player.id !== id);
+                savePlayersToStorage();
                 if (currentPage === 'main') {
                     renderPlayers();
                     renderStats();
@@ -1313,6 +1396,7 @@
             const femalePlayers = players.filter(p => p.gender === 'أنثى').length;
             const insuredPlayers = players.filter(p => p.insurance === 'نعم').length;
             const uninsuredPlayers = players.filter(p => p.insurance === 'لا').length;
+            const paidThisMonth = getPlayersPaidCurrentMonth().length;
             
             container.innerHTML = `
                 <div class="bg-white rounded-xl shadow-sm p-3 dark:bg-gray-800" onclick="showMainDashboard()" style="cursor: pointer;">
@@ -1358,6 +1442,12 @@
             const currentMonthIndex = new Date().getMonth();
             const currentMonthArabic = months.ar[currentMonthIndex];
             return players.filter(player => !player.completedMonths.includes(currentMonthArabic));
+        }
+
+        function getPlayersPaidCurrentMonth() {
+            const currentMonthIndex = new Date().getMonth();
+            const currentMonthArabic = months.ar[currentMonthIndex];
+            return players.filter(player => player.completedMonths.includes(currentMonthArabic));
         }
 
         function filterPlayers() {
@@ -1539,6 +1629,31 @@
             document.getElementById('month-alert-modal').classList.remove('hidden');
         }
 
+        function showPaidListModal() {
+            const paidPlayers = getPlayersPaidCurrentMonth();
+            const container = document.getElementById('paid-list-container');
+            if (paidPlayers.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-600">لا يوجد لاعبين مكتملين لهذا الشهر</p>';
+            } else {
+                container.innerHTML = paidPlayers.map(player => `
+                    <div class="bg-white rounded-lg p-3 shadow-sm dark:bg-gray-700">
+                        <div class="flex items-center gap-3">
+                            <img src="${player.photo}" alt="${player.name}" class="w-10 h-10 rounded-full object-cover">
+                            <div>
+                                <h4 class="font-medium text-gray-900 dark:text-white">${player.name}</h4>
+                                <p class="text-sm text-gray-600 dark:text-gray-300">${player.phone}</p>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('paid-list-modal').classList.remove('hidden');
+        }
+
+        function hidePaidListModal() {
+            document.getElementById('paid-list-modal').classList.add('hidden');
+        }
+
         function filterMalePlayers() {
             const searchTerm = document.getElementById('male-search-input').value.toLowerCase();
             const filterMonth = document.getElementById('male-month-filter').value;
@@ -1652,6 +1767,10 @@
             document.getElementById('subtitle').textContent = t.subtitle;
             document.getElementById('add-player-text').textContent = t.addPlayer;
             document.getElementById('add-player-btn').innerHTML = `<i class="fas fa-plus text-xs sm:text-base"></i><span id="add-player-text" class="text-xs sm:text-base">${t.addPlayer}</span>`;
+            document.getElementById('paid-list-title').textContent = t.paidCurrentMonth;
+            document.getElementById('paid-list-btn').setAttribute('title', t.paidCurrentMonth);
+            document.getElementById('change-logo-btn').setAttribute('title', t.changeLogo);
+            document.getElementById('register-link').textContent = t.registerLink;
             document.getElementById('no-players-title').textContent = t.noPlayers;
             document.getElementById('no-players-desc').textContent = t.noPlayersDesc;
             document.getElementById('name-label').textContent = t.nameLabel;
@@ -1743,6 +1862,116 @@
             isDarkMode = false;
             localStorage.setItem('darkMode', 'false');
         }
+
+        // ---------------- Storage helpers ----------------
+        const STORAGE_KEY = 'tkd_players';
+        const LOGO_KEY = 'tkd_logo';
+        function loadPlayersFromStorage() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed)) {
+                        players = parsed;
+                    }
+                }
+            } catch (e) { /* ignore */ }
+        }
+        function savePlayersToStorage() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(players));
+            } catch (e) { /* ignore */ }
+        }
+
+        function loadLogoFromStorage() {
+            const url = localStorage.getItem(LOGO_KEY);
+            if (url) {
+                const loginLogo = document.getElementById('login-logo');
+                const headerLogo = document.getElementById('header-logo');
+                if (loginLogo) loginLogo.src = url;
+                if (headerLogo) headerLogo.src = url;
+            }
+        }
+
+        function showLogoModal() {
+            document.getElementById('logo-modal').classList.remove('hidden');
+            setupLogoUpload();
+        }
+        function hideLogoModal() {
+            document.getElementById('logo-modal').classList.add('hidden');
+        }
+        function setupLogoUpload() {
+            const area = document.getElementById('logo-upload-area');
+            const input = document.getElementById('logo-file-input');
+            const preview = document.getElementById('logo-preview');
+            if (!area || !input) return;
+            area.addEventListener('click', () => input.click());
+            area.addEventListener('dragover', e => { e.preventDefault(); area.style.borderColor = '#3b82f6'; area.style.backgroundColor = '#ebf5ff'; });
+            area.addEventListener('dragleave', () => { area.style.borderColor = '#ccc'; area.style.backgroundColor = 'transparent'; });
+            area.addEventListener('drop', e => {
+                e.preventDefault(); area.style.borderColor = '#ccc'; area.style.backgroundColor = 'transparent';
+                if (e.dataTransfer.files.length > 0) handleLogoFile(e.dataTransfer.files[0]);
+            });
+            input.addEventListener('change', e => { if (e.target.files.length > 0) handleLogoFile(e.target.files[0]); });
+            document.getElementById('logo-save-btn').onclick = saveLogo;
+            document.getElementById('logo-reset-btn').onclick = resetLogo;
+            function handleLogoFile(file) {
+                if (!file.type.startsWith('image/')) return;
+                const reader = new FileReader();
+                reader.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; document.getElementById('logo-url-input').value = ''; };
+                reader.readAsDataURL(file);
+            }
+            function saveLogo() {
+                const urlInput = document.getElementById('logo-url-input').value.trim();
+                const src = urlInput || preview.src;
+                if (!src) return;
+                localStorage.setItem(LOGO_KEY, src);
+                loadLogoFromStorage();
+                hideLogoModal();
+            }
+            function resetLogo() {
+                localStorage.removeItem(LOGO_KEY);
+                loadLogoFromStorage();
+                hideLogoModal();
+            }
+        }
+
+        // ---------------- Export/Print helpers ----------------
+        function playersToCSV(list) {
+            const header = ['Name','Gender','Age','Phone','Level','Insurance','InsuranceType','InsuranceNumber','MonthsCompleted'];
+            const rows = list.map(p => [
+                p.name,
+                p.gender,
+                p.age,
+                p.phone,
+                p.level,
+                p.insurance,
+                p.insuranceType || '',
+                p.insuranceNumber || '',
+                (p.completedMonths || []).join(' ')
+            ]);
+            const csv = [header, ...rows].map(r => r.map(v => '"' + String(v ?? '').replace(/"/g,'""') + '"').join(',')).join('\n');
+            return csv;
+        }
+        function downloadCSV(list, filename) {
+            const blob = new Blob([playersToCSV(list)], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+        }
+        function printList(list, title) {
+            const win = window.open('', '_blank');
+            const dir = document.body.getAttribute('dir') || 'rtl';
+            const rows = list.map(p => `<tr><td>${p.name}</td><td>${p.gender}</td><td>${p.age}</td><td>${p.phone}</td><td>${p.level}</td><td>${p.insurance}${p.insurance==='نعم'&&p.insuranceType?` (${p.insuranceType})`:''}</td></tr>`).join('');
+            win.document.write(`<!doctype html><html lang="${currentLanguage}" dir="${dir}"><head><meta charset="utf-8"><title>${title}</title><style>table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:8px;text-align:${dir==='rtl'?'right':'left'};}th{background:#f5f5f5}</style></head><body><h2>${title}</h2><table><thead><tr><th>الاسم</th><th>الجنس</th><th>العمر</th><th>الهاتف</th><th>الرتبة</th><th>التأمين</th></tr></thead><tbody>${rows}</tbody></table><script>window.onload=()=>window.print()</script></body></html>`);
+            win.document.close();
+        }
+        function exportUninsuredCSV(){ const list = players.filter(p=>p.insurance==='لا'); downloadCSV(list,'uninsured.csv'); }
+        function printUninsuredList(){ const list = players.filter(p=>p.insurance==='لا'); printList(list, translations[currentLanguage].insuranceAlert); }
+        function exportUnpaidCSV(){ const list = getPlayersMissingCurrentMonth(); downloadCSV(list,'unpaid_current_month.csv'); }
+        function printUnpaidList(){ const list = getPlayersMissingCurrentMonth(); printList(list, translations[currentLanguage].monthAlert); }
+        function exportPaidCSV(){ const list = getPlayersPaidCurrentMonth(); downloadCSV(list,'paid_current_month.csv'); }
+        function printPaidList(){ const list = getPlayersPaidCurrentMonth(); printList(list, translations[currentLanguage].paidCurrentMonth); }
     </script>
 </body>
 </html>
